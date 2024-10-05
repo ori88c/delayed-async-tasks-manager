@@ -1,0 +1,75 @@
+{
+  "name": "delayed-async-tasks-manager",
+  "version": "1.0.0",
+  "description": "A scheduler for one-time (non-periodic) asynchronous tasks, designed to manage delayed executions. Features status getters to communicate the execution status, the ability to abort a pending execution, and the option to gracefully await the completion of all ongoing executions or a specific task.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ori88c/delayed-async-tasks-manager.git"
+  },
+  "contributors": [
+    "Ori Cohen (https://github.com/ori88c/)"
+  ],
+  "homepage": "https://github.com/ori88c/delayed-async-tasks-manager#readme",
+  "author": "Ori Cohen",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "test": "jest"
+  },
+  "keywords": [
+    "delayed",
+    "deferred",
+    "delayed-task",
+    "deferred-task",
+    "task",
+    "async-task",
+    "tasks",
+    "job",
+    "async-job",
+    "jobs",
+    "manager",
+    "task-manager",
+    "job-manager",
+    "schedule",
+    "task-schedule",
+    "scheduler",
+    "task-scheduler",
+    "job-scheduler",
+    "setTimeout",
+    "timer",
+    "executor",
+    "runner",
+    "onetime",
+    "one-time",
+    "onetime-execution",
+    "single-execution",
+    "typescript",
+    "ts",
+    "graceful-shutdown",
+    "deterministic-shutdown",
+    "deterministic-termination",
+    "wait-completion",
+    "promise",
+    "nodejs",
+    "ES2020"
+  ],
+  "engines": {
+    "node": ">=14.5.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.2"
+  },
+  "types": "./dist/delayed-async-tasks-manager.d.ts",
+  "main": "./dist/delayed-async-tasks-manager.js",
+  "files": [
+    "src/",
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ]
+}
