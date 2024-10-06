@@ -9,7 +9,19 @@ It controls the complete lifecycle of tasks and their promises by:
 
 This class is particularly well-suited for scenarios that demand precise control over the execution and termination of asynchronous tasks. It is an extension of the [delayed-async-task](https://www.npmjs.com/package/delayed-async-task) package, offering broader capabilities for managing multiple tasks.
 
-## Key Features :sparkles:
+## Table of Contents
+
+* [Key Features](#key-features)
+* [API](#api)
+* [Execution Status Getters](#execution-status-getters)
+* [Use Case Example: Security Incident Response System](#use-case-example)
+* [Design Decision: Task Manager per Use Case](#design-decision)
+* [Graceful and Deterministic Termination](#graceful-termination)
+* [Non-Persistent Scheduling](#non-persistent-scheduling)
+* [Error Handling](#error-handling)
+* [License](#license)
+
+## Key Features :sparkles:<a id="key-features"></a>
 
 * __Modern Substitute for Javascript's 'setTimeout'__: Specifically designed for scheduling asynchronous tasks, i.e., callbacks that return a Promise.
 * __Execution Status Getters__: Allows users to check the task's execution status, helping to prevent potential race conditions.
@@ -23,7 +35,7 @@ This class is particularly well-suited for scenarios that demand precise control
 * ES2020 Compatibility.
 * TypeScript support.
 
-## API :globe_with_meridians:
+## API :globe_with_meridians:<a id="api"></a>
 
 The `DelayedAsyncTasksManager` class provides the following methods:
 
@@ -39,7 +51,7 @@ The `DelayedAsyncTasksManager` class provides the following methods:
 
 If needed, refer to the code documentation for a more comprehensive description of each method.
 
-## Execution Status Getters :mag:
+## Execution Status Getters :mag:<a id="execution-status-getters"></a>
 
 The `DelayedAsyncTasksManager` class provides the following getter methods to reflect the current manager's state:
 
@@ -47,11 +59,13 @@ The `DelayedAsyncTasksManager` class provides the following getter methods to re
 * __currentlyExecutingTasksCount__: The number of tasks managed by this instance that are currently executing, i.e., tasks that are neither pending nor completed.
 * __uncaughtErrorsCount__: The number of uncaught task errors, that are currently stored by the instance. These errors have not yet been extracted using `extractUncaughtErrors`. Knowing the number of uncaught errors allows users to decide whether to process them immediately or wait for further accumulation.
 
-## Use Case Example: Security Incident Response System :man_technologist:
+To eliminate any ambiguity, all getter methods have **O(1)** time and space complexity, meaning they do **not** iterate through all currently managed tasks with each call. The metrics are maintained by the tasks themselves.
 
-Consider a Security Incident Response System, that schedules delayed actions such as disabling compromised user accounts, revoking access tokens, or blocking suspicious IP addresses. Each task is associated with a unique key (e.g., user ID, token ID), enabling security teams to **delay and manage responses based on evolving threat intelligence**. Tasks can be **canceled or adjusted if the threat is mitigated** before the action is triggered.
+## Use Case Example: Security Incident Response System :man_technologist:<a id="use-case-example"></a>
 
-In real-world scenarios, responses to security incidents are often immediate to minimize damage. However, delayed tasks could be applicable in cases where actions aren't taken immediately **to gather more context or prevent premature actions** based on incomplete information. For example, the delay could be used to notify administrators or confirm suspicious behavior before taking disruptive measures, like blocking access or disabling accounts.
+Consider a Security Incident Response System, that schedules delayed actions such as disabling compromised user accounts, revoking access tokens, or blocking suspicious IP addresses. Each task is associated with a unique key (e.g., user ID, token ID), enabling security teams to **delay and manage responses** based on evolving threat intelligence. Tasks can be **canceled or adjusted** if the threat is mitigated before the action is triggered.
+
+In real-world scenarios, responses to security incidents are often immediate to minimize damage. However, delayed tasks could be applicable in cases where actions aren't taken immediately to gather more context or prevent premature actions based on incomplete information. For example, the delay could be used to notify administrators or confirm suspicious behavior before taking disruptive measures, like blocking access or disabling accounts.
 
 Please note that this example is overly simplified. Real-world usage examples can be more complex, often involving persistency and synchronization with external resources.
 
@@ -111,7 +125,17 @@ class IncidentResponseSystem {
 }
 ```
 
-## Graceful and Deterministic Termination :hourglass:
+## Design Decision: Task Manager per Use Case<a id="design-decision"></a>
+
+Separating code into small, single-responsibility building blocks improves testability and readability. While it may seem simpler to use a single scheduler as a 'single source of truth' for all task types, this approach can lead to increased complexity as the application scales.
+
+For instance, the *Incident Response System* code example above could benefit from employing two task managers instead of one:
+* Enable Account Manager
+* Disable Account Manager
+
+One benefit is the ability to gather operation-specific metrics, such as periodically sampling the number of pending Disable Account actions through the `pendingTasksCount` getter.
+
+## Graceful and Deterministic Termination :hourglass:<a id="graceful-termination"></a>
 
 In the context of asynchronous tasks and schedulers, graceful and deterministic termination is **often overlooked**. `DelayedAsyncTasksManager` provides an out-of-the-box mechanism to await the completion of an asynchronous task that has already started but has not yet finished, using either the `awaitTaskCompletion` or `awaitCompletionOfAllCurrentlyExecutingTasks` method.
 
@@ -207,13 +231,13 @@ class Component {
 
 Another scenario where this feature is highly recommended is when a schedule might be aborted, such as in an abort-and-reschedule situation. If the task is currently executing (which can be checked via the `isExecuting` method), it cannot be aborted. In such cases, you can ignore the reschedule request, await the current execution to complete using `awaitTaskCompletion`, or implement any other business logic that suits your requirements.
 
-## Non-Persistent Scheduling
+## Non-Persistent Scheduling<a id="non-persistent-scheduling"></a>
 
 This component features non-durable scheduling, which means that if the application crashes or goes down, scheduling stops.
 
 If you need to guarantee durability over a multi-node deployment, consider other custom-made solutions for that purpose.
 
-## Error Handling :warning:
+## Error Handling :warning:<a id="error-handling"></a>
 
 Unlike `setTimeout` in Node.js, where errors from rejected promises propagate to the event loop and trigger an `uncaughtRejection` event, this package offers robust error handling:
 
@@ -222,6 +246,6 @@ Unlike `setTimeout` in Node.js, where errors from rejected promises propagate to
 
 Ideally, a delayed task should handle its own errors and **avoid** throwing uncaught exceptions.
 
-## License :scroll:
+## License :scroll:<a id="license"></a>
 
 [Apache 2.0](LICENSE)

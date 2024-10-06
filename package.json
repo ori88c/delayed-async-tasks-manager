@@ -1,7 +1,7 @@
 {
   "name": "delayed-async-tasks-manager",
-  "version": "1.0.0",
-  "description": "A scheduler for one-time (non-periodic) asynchronous tasks, designed to manage delayed executions. Features status getters to communicate the execution status, the ability to abort a pending execution, and the option to gracefully await the completion of all ongoing executions or a specific task.",
+  "version": "1.0.1",
+  "description": "A scheduler for one-time (non-periodic) asynchronous tasks, designed to manage delayed executions. It features status getters to communicate the execution state, a robust error handling mechanism for capturing uncaught errors, and the ability to abort pending executions. Additionally, it offers the option to gracefully await the completion of all ongoing tasks or a specific task.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ori88c/delayed-async-tasks-manager.git"
